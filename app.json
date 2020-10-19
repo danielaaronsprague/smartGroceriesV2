@@ -1,0 +1,12 @@
+{
+  "name": "smartGroceries",
+  "displayName": "smartGroceries",
+  "expo": {
+    "name": "smartGroceries",
+    "slug": "smartGroceries",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
