@@ -27,36 +27,57 @@ import {
   Icon,
   Form,
 } from "native-base";
+import Autocomplete from "react-native-autocomplete-input";
 // import { Picker } from "@react-native-community/picker";
 import { ScrollView } from "react-native-gesture-handler";
 import shortid from "shortid";
 import { Ionicons } from "@expo/vector-icons";
 import { MonoText } from "../components/StyledText";
 
-const allItems = [
-  { name: "bread", category: "bakery", active: true },
-  { name: "eggs", category: "dairy", active: true },
-  { name: "paper towels", category: "paperGoods", active: true },
-  { name: "milk", category: "dairy", active: true },
-  { name: "apples", category: "produce", active: true },
-  { name: "broccoli", category: "produce", active: true },
-  { name: "limes", category: "produce", active: true },
-  { name: "tequila", category: "booze", active: true },
-  { name: "beer", category: "booze", active: true },
-  { name: "tylenol", category: "pharmacy", active: true },
-  { name: "frozen corn", category: "frozen", active: true },
-  { name: "hot sauce", category: "dryGoods", active: true },
-  { name: "onions", category: "produce", active: true },
-  { name: "cauliflour", category: "produce", active: true },
-  { name: "cilantro", category: "produce", active: true },
-  { name: "dill", category: "produce", active: true },
-  { name: "oranges", category: "produce", active: true },
-  { name: "lemons", category: "produce", active: true },
-];
+// const allItems = [
+//   { name: "bread", category: "bakery", active: true },
+//   { name: "eggs", category: "dairy", active: true },
+//   { name: "paper towels", category: "paperGoods", active: true },
+//   { name: "milk", category: "dairy", active: true },
+//   { name: "apples", category: "produce", active: true },
+//   { name: "broccoli", category: "produce", active: true },
+//   { name: "limes", category: "produce", active: true },
+//   { name: "tequila", category: "booze", active: true },
+//   { name: "beer", category: "booze", active: true },
+//   { name: "tylenol", category: "pharmacy", active: true },
+//   { name: "frozen corn", category: "frozen", active: true },
+//   { name: "hot sauce", category: "dryGoods", active: true },
+//   { name: "onions", category: "produce", active: true },
+//   { name: "cauliflour", category: "produce", active: true },
+//   { name: "cilantro", category: "produce", active: true },
+//   { name: "dill", category: "produce", active: true },
+//   { name: "oranges", category: "produce", active: true },
+//   { name: "lemons", category: "produce", active: true },
+// ];
 
 export default function HomeScreen(props) {
   const [selectedId, setSelectedId] = React.useState(null);
   const [listItems, setList] = React.useState([]);
+  const [allItems, setAllItems] = React.useState([
+    { name: "bread", category: "bakery", active: true },
+    { name: "eggs", category: "dairy", active: true },
+    { name: "paper towels", category: "paperGoods", active: true },
+    { name: "milk", category: "dairy", active: true },
+    { name: "apples", category: "produce", active: true },
+    { name: "broccoli", category: "produce", active: true },
+    { name: "limes", category: "produce", active: true },
+    { name: "tequila", category: "booze", active: true },
+    { name: "beer", category: "booze", active: true },
+    { name: "tylenol", category: "pharmacy", active: true },
+    { name: "frozen corn", category: "frozen", active: true },
+    { name: "hot sauce", category: "dryGoods", active: true },
+    { name: "onions", category: "produce", active: true },
+    { name: "cauliflour", category: "produce", active: true },
+    { name: "cilantro", category: "produce", active: true },
+    { name: "dill", category: "produce", active: true },
+    { name: "oranges", category: "produce", active: true },
+    { name: "lemons", category: "produce", active: true },
+  ]);
   const [itemDraft, modifyDraft] = React.useState("");
   const [category, setCategory] = React.useState("produce");
   const [order, setOrder] = React.useState([
@@ -81,6 +102,17 @@ export default function HomeScreen(props) {
     if (b.name > a.name) return -1;
     return 0;
   }
+
+  function findItems(draftItem) {
+    if (draftItem.length < 2) {
+      return [];
+    }
+    const regex = new RegExp(`${itemDraft}`, "i");
+    return allItems.filter((item) => item.name.search(regex) >= 0);
+  }
+  function comp(a, b) {
+    return a.toLowerCase() === b.toLowerCase();
+  }
   // async function addNewProduct(name, category) {
   //   setList([...listItems, { [name]: category }]);
   //   await AsyncStorage.setItem('@allItems', JSON.stringify(newProductsList));
@@ -91,39 +123,91 @@ export default function HomeScreen(props) {
   return (
     <SafeAreaView style={styles.container}>
       <Form style={styles.form}>
-        <Input style={styles.input} placeholder='new item...' />
-        <Picker
-          iosIcon={
-            <Icon name='arrow-dropdown-circle' style={{ color: "#08805B" }} />
+        {/* <Input style={styles.input} placeholder='new item...' /> */}
+        <Autocomplete
+          data={
+            findItems(itemDraft).length === 1 &&
+            comp(itemDraft, findItems(itemDraft)[0].name)
+              ? []
+              : findItems(itemDraft)
           }
-          selectedValue={category}
-          style={styles.picker}
-          onValueChange={(data) => {
-            console.log(data);
-            setCategory(data);
-            modifyDraft(category);
+          style={styles.input}
+          defaultValue={itemDraft}
+          inputContainerStyle={styles.input}
+          listContainerStyle={styles.listStyle}
+          // listStyle={styles.listStyle}
+          placeholder='new item...'
+          keyExtractor={(item) => item.name + shortid()}
+          onChangeText={(text) => {
+            modifyDraft(text);
           }}
-        >
-          <Picker.Item label='Produce' value='produce' />
-          <Picker.Item label='Bakery' value='bakery' />
-          <Picker.Item label='Dairy' value='dairy' />
-          <Picker.Item label='Paper Goods' value='paperGoods' />
-          <Picker.Item label='Booze' value='booze' />
-          <Picker.Item label='Forzen' value='frozen' />
-          <Picker.Item label='Dry Goods' value='dryGoods' />
-          <Picker.Item label='Pharmacy' value='pharmacy' />
-          <Picker.Item label='Random' value='random' />
-          <Picker.Item label='Fridge' value='fridge' />
-        </Picker>
+          renderItem={({ item, i }) => (
+            <TouchableOpacity
+              onPress={() => {
+                modifyDraft(item.name);
+                setCategory(item.category);
+              }}
+            >
+              <Text>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+        />
+        <Body>
+          <Picker
+            iosIcon={
+              <Icon name='arrow-dropdown-circle' style={{ color: "#08805B" }} />
+            }
+            selectedValue={category}
+            style={styles.picker}
+            onValueChange={(data) => {
+              setCategory(data);
+            }}
+          >
+            <Picker.Item label='Produce' value='produce' />
+            <Picker.Item label='Bakery' value='bakery' />
+            <Picker.Item label='Dairy' value='dairy' />
+            <Picker.Item label='Paper Goods' value='paperGoods' />
+            <Picker.Item label='Booze' value='booze' />
+            <Picker.Item label='Forzen' value='frozen' />
+            <Picker.Item label='Dry Goods' value='dryGoods' />
+            <Picker.Item label='Pharmacy' value='pharmacy' />
+            <Picker.Item label='Random' value='random' />
+            <Picker.Item label='Fridge' value='fridge' />
+          </Picker>
+        </Body>
         <Right>
-          <Button iconLeft transparent style={styles.button}>
+          <Button
+            iconLeft
+            transparent
+            style={styles.button}
+            onPress={() => {
+              if (
+                listItems.some(
+                  (item) =>
+                    item.category === category && item.name === itemDraft
+                )
+              ) {
+                console.log(
+                  "we should add a message to user that the item is already in list"
+                );
+              } else if (itemDraft === "") {
+                console.log("grey button in the future so the user knows");
+              } else if (itemDraft !== "") {
+                setList([
+                  ...listItems,
+                  { name: itemDraft, category: category, active: true },
+                ]);
+              }
+              modifyDraft("");
+            }}
+          >
             <Ionicons name='ios-add-circle-outline' size={22} color='#08805B' />
           </Button>
         </Right>
       </Form>
       <FlatList
-        data={allItems.sort(compare)}
-        keyExtractor={(item) => item.name}
+        data={listItems.sort(compare)}
+        keyExtractor={(item) => item.name + item.category}
         renderItem={({ item }) => {
           const backgroundColor =
             item.name === selectedId ? "#08805B" : "#D0F1E7";
@@ -178,19 +262,26 @@ HomeScreen.navigationOptions = {
 const styles = StyleSheet.create({
   form: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
     height: 60,
     marginLeft: 16,
     marginRight: 16,
     padding: 0,
+    zIndex: 13,
   },
   plus: {},
   picker: {
-    maxWidth: 130,
+    justifyContent: "flex-end",
+    minWidth: 160,
+  },
+  listStyle: {
+    borderRadius: 4,
+    backgroundColor: "#fff",
   },
   input: {
-    maxWidth: 120,
+    width: 120,
+    borderWidth: 0,
+    fontSize: 17,
   },
   button: {
     justifyContent: "center",
