@@ -23,9 +23,9 @@ import {
   ListItem,
   Picker,
   Item,
-  Form,
   Button,
   Icon,
+  Form,
 } from "native-base";
 // import { Picker } from "@react-native-community/picker";
 import { ScrollView } from "react-native-gesture-handler";
@@ -90,50 +90,39 @@ export default function HomeScreen(props) {
   // }
   return (
     <SafeAreaView style={styles.container}>
+      <Form style={styles.form}>
+        <Input style={styles.input} placeholder='new item...' />
+        <Picker
+          iosIcon={
+            <Icon name='arrow-dropdown-circle' style={{ color: "#08805B" }} />
+          }
+          selectedValue={category}
+          style={styles.picker}
+          onValueChange={(data) => {
+            console.log(data);
+            setCategory(data);
+            modifyDraft(category);
+          }}
+        >
+          <Picker.Item label='Produce' value='produce' />
+          <Picker.Item label='Bakery' value='bakery' />
+          <Picker.Item label='Dairy' value='dairy' />
+          <Picker.Item label='Paper Goods' value='paperGoods' />
+          <Picker.Item label='Booze' value='booze' />
+          <Picker.Item label='Forzen' value='frozen' />
+          <Picker.Item label='Dry Goods' value='dryGoods' />
+          <Picker.Item label='Pharmacy' value='pharmacy' />
+          <Picker.Item label='Random' value='random' />
+          <Picker.Item label='Fridge' value='fridge' />
+        </Picker>
+        <Right>
+          <Button iconLeft transparent style={styles.button}>
+            <Ionicons name='ios-add-circle-outline' size={22} color='#08805B' />
+          </Button>
+        </Right>
+      </Form>
       <FlatList
         data={allItems.sort(compare)}
-        ListHeaderComponent={
-          <ListItem style={styles.form}>
-            <Input style={styles.input} placeholder='new item...' />
-            <Picker
-              iosIcon={
-                <Icon
-                  name='arrow-dropdown-circle'
-                  style={{ color: "#08805B" }}
-                />
-              }
-              selectedValue={category}
-              style={{
-                height: 40,
-                width: 130,
-              }}
-              onValueChange={(data) => {
-                console.log(data);
-                setCategory(data);
-                modifyDraft(category);
-              }}
-            >
-              <Picker.Item label='Produce' value='produce' />
-              <Picker.Item label='Bakery' value='bakery' />
-              <Picker.Item label='Dairy' value='dairy' />
-              <Picker.Item label='Paper Goods' value='paperGoods' />
-              <Picker.Item label='Booze' value='booze' />
-              <Picker.Item label='Forzen' value='frozen' />
-              <Picker.Item label='Dry Goods' value='dryGoods' />
-              <Picker.Item label='Pharmacy' value='pharmacy' />
-              <Picker.Item label='Random' value='random' />
-              <Picker.Item label='Fridge' value='fridge' />
-            </Picker>
-            <Button iconLeft success transparent>
-              <Ionicons
-                name='ios-add-circle-outline'
-                size={30}
-                color='#c7c6c1'
-                style={styles.button}
-              />
-            </Button>
-          </ListItem>
-        }
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => {
           const backgroundColor =
@@ -187,19 +176,26 @@ HomeScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
-  left: {
-    width: 150,
-  },
   form: {
-    justifyContent: "space-between",
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
+    height: 60,
+    marginLeft: 16,
+    marginRight: 16,
+    padding: 0,
   },
-  plus: {
-    position: "absolute",
+  plus: {},
+  picker: {
+    maxWidth: 130,
   },
-  input: { width: 140 },
+  input: {
+    maxWidth: 120,
+  },
   button: {
-    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+    width: 30,
   },
   container: {
     flex: 1,
