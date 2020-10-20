@@ -149,27 +149,29 @@ export default function HomeScreen(props) {
     // const index = allItems.findIndex(item)
 
     return (
-      <Animated.View
-        style={{
-          height: rowTranslateAnimatedValues[
-            allItems.indexOf(item)
-          ].interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 50],
-          }),
-        }}
-      >
-        <TouchableHighlight
-          style={{ backgroundColor }}
-          onPress={() => setSelectedId(item.name)}
+      item.active && (
+        <Animated.View
+          style={{
+            height: rowTranslateAnimatedValues[
+              allItems.indexOf(item)
+            ].interpolate({
+              inputRange: [0, 1],
+              outputRange: [0, 50],
+            }),
+          }}
         >
-          <View>
-            <Text>
-              {category} {item.name}
-            </Text>
-          </View>
-        </TouchableHighlight>
-      </Animated.View>
+          <TouchableHighlight
+            style={{ backgroundColor }}
+            onPress={() => setSelectedId(item.name)}
+          >
+            <View>
+              <Text>
+                {category} {item.name}
+              </Text>
+            </View>
+          </TouchableHighlight>
+        </Animated.View>
+      )
     );
   };
   const renderHiddenItem = () => (
@@ -199,7 +201,7 @@ export default function HomeScreen(props) {
           }
           style={styles.input}
           defaultValue={itemDraft}
-          // inputContainerStyle={styles.input}
+          inputContainerStyle={styles.input}
           listContainerStyle={styles.listStyle}
           // listStyle={styles.listStyle}
           placeholder="new item..."
